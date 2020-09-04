@@ -1,23 +1,19 @@
 const mask = (selector) => {
-    function setMask(e) {
-        // default mask
+    function setMask() {
         let matrix = '+###############';
 
-        let maskFound = false;
         maskList.forEach(item => {
-            if ((this.value.length) > 1 && (item.code.indexOf(this.value, 0) == 0)) {
-                maskFound = true;
-                lastMatrix = item.code;
+            let code = item.code.replace(/[\s#]/g, ''),
+                phone = this.value.replace(/[\s#-)(]/g, '');
+
+            if (phone.includes(code)) {
+                console.log(phone, code);
+                matrix = item.code;
             }
         });
 
-        if ((this.value.length) > 1 && !maskFound) {
-            matrix = lastMatrix;
-        }
-
         let i = 0,
             val = this.value.replace(/\D/g, '');
-
 
         this.value = matrix.replace(/(?!\+)./g, function(a) {
             return /[#\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? '' : a;
@@ -27,7 +23,7 @@ const mask = (selector) => {
     let inputs = document.querySelectorAll(selector);
 
     inputs.forEach(input => {
-        input.value = '+';
+        if (!input.value) input.value = '+';
         input.addEventListener('input', setMask);
         input.addEventListener('focus', setMask);
         input.addEventListener('blur', setMask);
